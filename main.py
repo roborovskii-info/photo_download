@@ -34,14 +34,16 @@ def collect_image_url():
 
     page_url_map = {}
     for item_link in item_link_list:
+        # \u3000が入って邪魔する事あるので削除
+        key = item_link.text.replace('\u3000', '')
         # aタグのテキストからフォルダ名 / URLを取得
-        page_url_map[item_link.text] = item_link.get_attribute('href')
+        page_url_map[key] = item_link.get_attribute('href')
     print(page_url_map)
 
     # 各アルバムへ移動
     for key in page_url_map.keys():
         # ディレクトリを作成
-        os.makedirs(f'dist/{EVENT_ID}/{key}', exist_ok=True)
+        os.makedirs(f'./dist/{EVENT_ID}/{key}', exist_ok=True)
 
         driver.get(page_url_map[key])
         time.sleep(1)
@@ -62,7 +64,7 @@ def collect_image_url():
                 image_url = image['data-magnify-src']
                 print(f'Image URL = {image_url}')
                 dst_file_name = f'{image["alt"][:4]}.jpg'
-                download_file(image_url, f'{EVENT_ID}/{key}/{dst_file_name}')
+                download_file(image_url, f'./dist/{EVENT_ID}/{key}/{dst_file_name}')
 
 
 def scrape_total_page(raw_str: str) -> int:
